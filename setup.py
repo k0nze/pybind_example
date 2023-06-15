@@ -100,8 +100,6 @@ class CMakeBuild(build_ext):
             build_args.append("--")
             build_args.append("-j2")
 
-        self.build_args = build_args
-
         # update CXXFLAGS environment variable with operation system information
         env = os.environ.copy()
         env["CXXFLAGS"] = '{} -DVERSION_INFO=\\"{}\\"'.format(
@@ -117,7 +115,7 @@ class CMakeBuild(build_ext):
         # run cmake command
         print("-" * 10, "Running CMake prepare", "-" * 10)
         subprocess.check_call(
-            ["cmake", cmake_list_dir] + cmake_args, cwd=self.build_temp, env=env
+            ["cmake", cmake_list_dir] + cmake_args, cwd=build_dir_path, env=env
         )
 
         # emit CMake command for debugging purposes
@@ -125,13 +123,12 @@ class CMakeBuild(build_ext):
 
         # build
         print("-" * 10, "Building extensions", "-" * 10)
-        cmake_cmd = ["cmake", "--build", "."] + self.build_args
-        subprocess.check_call(cmake_cmd, cwd=self.build_temp)
+        cmake_cmd = ["cmake", "--build", "."] + build_args
+        subprocess.check_call(cmake_cmd, cwd=build_dir_path)
 
         # move cpython.so from build temp to final position
         if "editable_install" not in globals():
             for ext in self.extensions:
-                ...
                 self.move_output(ext)
 
     def move_output(self, ext):
