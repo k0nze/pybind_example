@@ -108,12 +108,14 @@ class CMakeBuild(build_ext):
             env.get("CXXFLAGS", ""), self.distribution.get_version()
         )
 
-        if not os.path.exists(self.build_temp):
-            os.makedirs(self.build_temp)
+        if not os.path.exists(build_dir_path):
+            os.makedirs(build_dir_path)
 
-        # CMakeLists.txt is in the same directory as this setup.py file
+        # get path to CMakeLists.txt which is in the same directory as this setup.py file
         cmake_list_dir = os.path.abspath(os.path.dirname(__file__))
-        print("-" * 10, "Running CMake prepare", "-" * 40)
+
+        # run cmake command
+        print("-" * 10, "Running CMake prepare", "-" * 10)
         subprocess.check_call(
             ["cmake", cmake_list_dir] + cmake_args, cwd=self.build_temp, env=env
         )
@@ -121,7 +123,8 @@ class CMakeBuild(build_ext):
         # emit CMake command for debugging purposes
         print(f"CMake command: cmake {cmake_list_dir} {' '.join(cmake_args)}")
 
-        print("-" * 10, "Building extensions", "-" * 40)
+        # build
+        print("-" * 10, "Building extensions", "-" * 10)
         cmake_cmd = ["cmake", "--build", "."] + self.build_args
         subprocess.check_call(cmake_cmd, cwd=self.build_temp)
 
@@ -133,9 +136,9 @@ class CMakeBuild(build_ext):
 
     def move_output(self, ext):
         # move cpython.so to pybind_example/backend dir
-        build_temp_dir_path = Path(self.build_temp).resolve()
+        build_dir_path = Path(self.build_temp).resolve()
 
-        source_path = build_temp_dir_path / self.get_ext_filename(ext.name)
+        source_path = build_dir_path / self.get_ext_filename(ext.name)
 
         dest_path = Path(self.get_ext_fullpath(ext.name)).resolve()
         dest_path = Path(
