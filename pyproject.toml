@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=63.2.0", "wheel>=0.37.1"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pybind_example"
+description = "Example Project showing how to Create a Python Package with a pybind11 Backend"
+readme = "README.md"
+authors = [{ name = "Konstantin Lübeck", email = "konstantin.luebeck@uni-tuebingen.de" }]
+license = { file = "LICENSE" }
+
+classifiers = [
+    "License :: OSI Approved :: BSD License",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+]
+
+keywords = ["example"]
+
+dependencies = []
+
+requires-python = ">=3.11"
+
+[project.optional-dependencies]
+dev = ["unittest", "pre-commit"]
+
+[project.urls]
+Homepage = "https://github.com/k0nze/pybind_example"
