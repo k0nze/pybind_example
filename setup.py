@@ -42,14 +42,17 @@ class CMakeBuild(build_ext):
                 + ", ".join(e.name for e in self.extensions)
             )
 
-        build_directory = os.path.abspath(self.build_temp)
+        # get path to directory which will contain the build artifacts
+        build_dir_path = os.path.abspath(self.build_temp)
 
+        # set the CMake arguments for compiling the C++ code and pybind11 wrapper
         cmake_args = [
-            f"-DCMAKE_LIBRARY_OUTPUT_DIRECTORY={build_directory}",
+            f"-DCMAKE_LIBRARY_OUTPUT_DIRECTORY={build_dir_path}",
             f"-DPYTHON_EXECUTABLE={sys.executable}",
             f"-DPYBIND11_PYTHON_VERSION={sys.version_info.major}.{sys.version_info.minor}",
         ]
 
+        # check if installation is editable
         if "editable_wheel" in sys.argv:
             global editable_install
             editable_install = True
@@ -57,40 +60,54 @@ class CMakeBuild(build_ext):
         # get path to directory where the cpython.so will be after build
         if "editable_install" in globals():
             print("editable install")
-            self.pybind_example_backend_dir_path = Path(
+            # get path to install directory
+            self.pybind_example_backend_install_dir_path = Path(
                 self.get_ext_fullpath("src")
             ).resolve()
-            self.pybind_example_backend_dir_path = Path(
-                str(self.pybind_example_backend_dir_path.parents[0]) + "/src/backend/"
+            self.pybind_example_backend_install_dir_path = Path(
+                str(self.pybind_example_backend_install_dir_path.parents[0])
+                + "/src/backend/"
             )
+            # in an editable install the created cpython.so has to be moved into the src/backend directory
             cmake_args.append("-DMOVE_CPYTHON_SO=ON")
 
         else:
             print("non-editable install")
-            self.pybind_example_backend_dir_path = Path(
+            # get path to install directory
+            self.pybind_example_backend_install_dir_path = Path(
                 distutils.sysconfig.get_python_lib() + "/pybind_example/backend/"
             )
 
-        print(f"Path to pybind_example/backend: {self.pybind_example_backend_dir_path}")
+        print(
+            f"Install path to pybind_example/backend: {self.pybind_example_backend_install_dir_path}"
+        )
 
-        cfg = "Debug" if self.debug else "Release"
-        build_args = ["--config", cfg]
+        # check if installation is in debug or release mode
+        if self.debug:
+            build_config = "Debug"
+        else:
+            build_config = "Release"
 
-        cmake_args += [f"-DCMAKE_BUILD_TYPE={cfg}"]
+        # append build config to cmake arguments
+        build_args = ["--config", build_config]
+        cmake_args.append(f"-DCMAKE_BUILD_TYPE={build_config}")
 
         # check if ninja is installed
         if which("ninja") is not None:
-            cmake_args += ["-GNinja"]
+            cmake_args.append("-GNinja")
         else:
             # use make instead
-            build_args += ["--", "-j2"]
+            build_args.append("--")
+            build_args.append("-j2")
 
         self.build_args = build_args
 
+        # update CXXFLAGS environment variable with operation system information
         env = os.environ.copy()
         env["CXXFLAGS"] = '{} -DVERSION_INFO=\\"{}\\"'.format(
             env.get("CXXFLAGS", ""), self.distribution.get_version()
         )
+
         if not os.path.exists(self.build_temp):
             os.makedirs(self.build_temp)
 
@@ -122,7 +139,7 @@ class CMakeBuild(build_ext):
 
         dest_path = Path(self.get_ext_fullpath(ext.name)).resolve()
         dest_path = Path(
-            str(self.pybind_example_backend_dir_path) + "/" + dest_path.name
+            str(self.pybind_example_backend_install_dir_path) + "/" + dest_path.name
         )
         dest_directory = dest_path.parents[0]
         dest_directory.mkdir(parents=True, exist_ok=True)
