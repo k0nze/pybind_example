@@ -7,6 +7,10 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 # globally enable -fPIC
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
+set(MOVE_CPYTHON_SO
+    "OFF"
+    CACHE STRING "cpython.so is moved into src/backend")
+
 # tell CMake where pybind11 is
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/external/pybind11)
 
@@ -15,6 +19,8 @@ set(BACKEND_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/backend)
 pybind11_add_module(pybind_example ${BACKEND_SOURCE_DIR}/wrapper.cc
                     ${BACKEND_SOURCE_DIR}/test_class.cc)
 
-# move cpython.so into backend directory
-set_target_properties(pybind_example PROPERTIES LIBRARY_OUTPUT_DIRECTORY
-                                                ${BACKEND_SOURCE_DIR})
+if(MOVE_CPYTHON_SO)
+  # move cpython.so into backend directory
+  set_target_properties(pybind_example PROPERTIES LIBRARY_OUTPUT_DIRECTORY
+                                                  ${BACKEND_SOURCE_DIR})
+endif()

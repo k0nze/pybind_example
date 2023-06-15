@@ -44,6 +44,12 @@ class CMakeBuild(build_ext):
 
         build_directory = os.path.abspath(self.build_temp)
 
+        cmake_args = [
+            f"-DCMAKE_LIBRARY_OUTPUT_DIRECTORY={build_directory}",
+            f"-DPYTHON_EXECUTABLE={sys.executable}",
+            f"-DPYBIND11_PYTHON_VERSION={sys.version_info.major}.{sys.version_info.minor}",
+        ]
+
         if "editable_wheel" in sys.argv:
             global editable_install
             editable_install = True
@@ -52,12 +58,13 @@ class CMakeBuild(build_ext):
         if "editable_install" in globals():
             print("editable install")
             self.pybind_example_backend_dir_path = Path(
-                self.get_ext_fullpath("pybind_example")
+                self.get_ext_fullpath("src")
             ).resolve()
             self.pybind_example_backend_dir_path = Path(
-                str(self.pybind_example_backend_dir_path.parents[0])
-                + "/pybind_example/backend/"
+                str(self.pybind_example_backend_dir_path.parents[0]) + "/src/backend/"
             )
+            cmake_args.append("-DMOVE_CPYTHON_SO=ON")
+
         else:
             print("non-editable install")
             self.pybind_example_backend_dir_path = Path(
@@ -65,12 +72,6 @@ class CMakeBuild(build_ext):
             )
 
         print(f"Path to pybind_example/backend: {self.pybind_example_backend_dir_path}")
-
-        cmake_args = [
-            f"-DCMAKE_LIBRARY_OUTPUT_DIRECTORY={build_directory}",
-            f"-DPYTHON_EXECUTABLE={sys.executable}",
-            f"-DPYBIND11_PYTHON_VERSION={sys.version_info.major}.{sys.version_info.minor}",
-        ]
 
         cfg = "Debug" if self.debug else "Release"
         build_args = ["--config", cfg]
@@ -107,15 +108,18 @@ class CMakeBuild(build_ext):
         cmake_cmd = ["cmake", "--build", "."] + self.build_args
         subprocess.check_call(cmake_cmd, cwd=self.build_temp)
 
-        # Move from build temp to final position
-        for ext in self.extensions:
-            ...
-            # self.move_output(ext)
+        # move cpython.so from build temp to final position
+        if "editable_install" not in globals():
+            for ext in self.extensions:
+                ...
+                self.move_output(ext)
 
     def move_output(self, ext):
         # move cpython.so to pybind_example/backend dir
-        build_temp = Path(self.build_temp).resolve()
-        source_path = build_temp / self.get_ext_filename(ext.name)
+        build_temp_dir_path = Path(self.build_temp).resolve()
+
+        source_path = build_temp_dir_path / self.get_ext_filename(ext.name)
+
         dest_path = Path(self.get_ext_fullpath(ext.name)).resolve()
         dest_path = Path(
             str(self.pybind_example_backend_dir_path) + "/" + dest_path.name
@@ -134,8 +138,8 @@ setup(
     version="0.1.0",
     packages=["pybind_example", "pybind_example.backend"],
     package_dir={
-        "src": "pybind_example",
-        "src.backend": "pybind_example/backend",
+        "pybind_example": "src",
+        "pybind_example.backend": "src/backend",
     },
     ext_modules=ext_modules,
     cmdclass={"develop": develop, "install": install, "build_ext": CMakeBuild},
