@@ -4,6 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pybind_example"
+version = "0.1.0"
 description = "Example Project showing how to Create a Python Package with a pybind11 Backend"
 readme = "README.md"
 authors = [{ name = "Konstantin Lübeck", email = "konstantin.luebeck@uni-tuebingen.de" }]

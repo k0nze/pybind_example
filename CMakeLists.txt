@@ -10,7 +10,7 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 # tell CMake where pybind11 is
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/external/pybind11)
 
-set(BACKEND_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/pybind_example/backend)
+set(BACKEND_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/backend)
 
 pybind11_add_module(pybind_example ${BACKEND_SOURCE_DIR}/wrapper.cc
                     ${BACKEND_SOURCE_DIR}/test_class.cc)
