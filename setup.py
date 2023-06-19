@@ -68,8 +68,9 @@ class CMakeBuild(build_ext):
                 str(self.pybind_example_backend_install_dir_path.parents[0])
                 + "/src/backend/"
             )
-            # in an editable install the created cpython.so has to be moved into the src/backend directory
+            # in an editable install the created lib and cpython.so have to be moved into the src/backend directory
             cmake_args.append("-DMOVE_CPYTHON_SO=ON")
+            cmake_args.append("-DMOVE_LIB=ON")
 
         else:
             print("non-editable install")
