@@ -9,15 +9,16 @@ namespace py = pybind11;
 PYBIND11_MODULE(pybind_example, m) {
     py::class_<Animal>(m, "Animal")
         .def(py::init<char* const>(), py::arg("name"))
-        .def("get_name", &Animal::get_name);
+        .def("get_name", &Animal::get_name)
+        .def("make_sound", &Animal::make_sound);
 
     py::class_<Dog>(m, "Dog")
         .def(py::init<char* const>(), py::arg("name"))
-        .def("get_name", &Dog::get_name)
-        .def("wag_tail", &Dog::wag_tail);
+        .def("wag_tail", &Dog::wag_tail)
+        .def("make_sound", &Dog::make_sound);
 
     py::class_<Cat>(m, "Cat")
         .def(py::init<char* const>(), py::arg("name"))
-        .def("get_name", &Cat::get_name)
-        .def("purr", &Cat::purr);
+        .def("purr", &Cat::purr)
+        .def("make_sound", &Cat::make_sound);
 }

@@ -5,7 +5,7 @@
 
 class Cat : public Animal {
 public:
-    Cat(char* const name);
+    Cat(const std::string& name);
     void make_sound();
     void purr();
 };

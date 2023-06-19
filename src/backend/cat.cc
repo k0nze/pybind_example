@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-Cat::Cat(char* const name) : Animal(name) {}
+Cat::Cat(const std::string& name) : Animal(name) {}
 
 void Cat::make_sound() { std::cout << "meow" << std::endl; }
 
