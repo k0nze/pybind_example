@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-Animal::Animal(char *const name) : name_(name) {}
+Animal::Animal(char* const name) : name_(name) {}
 
 void Animal::make_sound() { std::cout << "nope" << std::endl; }
 

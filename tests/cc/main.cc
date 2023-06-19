@@ -1,11 +1,11 @@
-#include "../../pybind_example/backend/test_class.h"
-
 #include <iostream>
 
-int main(int argc, char *argv[]) {
-  auto tc = TestClass(42);
+#include "../../pybind_example/backend/test_class.h"
 
-  std::cout << tc.get_num() << std::endl;
+int main(int argc, char* argv[]) {
+    auto tc = TestClass(42);
 
-  return 0;
+    std::cout << tc.get_num() << std::endl;
+
+    return 0;
 }
