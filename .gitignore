@@ -192,3 +192,6 @@ cython_debug/
 *.exe
 *.out
 *.app
+
+# local config files
+.clangd

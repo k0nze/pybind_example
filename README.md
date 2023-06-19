@@ -64,3 +64,20 @@ mkdir build
 cmake ${PYBIND_EXAMPLE_PATH} -DPYTHON_EXECUTABLE=../.venv/bin/activate -DPYBIND11_PYTHON_VERSION=$(python -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')") -DMOVE_CPYTHON_SO=ON -DCMAKE_BUILD_TYPE=Release -GNinja
 ninja
 ```
+
+## `clangd` configuration
+
+To get `pybind11` and Python includes for the `clangd` language server create a `.clangd` file at the project root with the following content:
+
+```
+CompileFlags:
+  Add:
+    - "-I[PATH_TO_PYTHON_INCLUDES]"
+    - "-I../external/pybind11/include"
+```
+
+The path the the Python can be obtained with the following command:
+
+```
+echo $(python-config --includes)
+```
