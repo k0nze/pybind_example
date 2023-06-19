@@ -61,7 +61,7 @@ python -m pip install [-e] ${PYBIND_EXAMPLE_PATH}
 create a build directory and run `cmake`:
 ```
 mkdir build
-cmake ${PYBIND_EXAMPLE_PATH} -DPYTHON_EXECUTABLE=../.venv/bin/activate -DPYBIND11_PYTHON_VERSION=$(python -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')") -DMOVE_LIB=ON -DMOVE_CPYTHON_SO=ON -DCMAKE_BUILD_TYPE=Release -GNinja
+cmake ${PYBIND_EXAMPLE_PATH} -DPYTHON_EXECUTABLE=../.venv/bin/python -DPYBIND11_PYTHON_VERSION=$(python -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')") -DMOVE_LIB=ON -DMOVE_CPYTHON_SO=ON -DCMAKE_BUILD_TYPE=Release -GNinja
 ninja
 ```
 
