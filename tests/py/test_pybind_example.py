@@ -3,5 +3,7 @@ import pybind_example
 
 
 class TestPybindExample(unittest.TestCase):
-    def test_test_class(self) -> None:
-        self.assertEqual(pybind_example.run(), 42)
+    def test_animal(self) -> None:
+        name = "Kahooz"
+        animal = pybind_example.Animal(name)
+        self.assertEqual(name, animal.get_name())

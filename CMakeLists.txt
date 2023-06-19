@@ -37,8 +37,10 @@ add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/external/pybind11)
 
 set(BACKEND_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/backend)
 
-pybind11_add_module(pybind_example ${BACKEND_SOURCE_DIR}/wrapper.cc
-                    ${BACKEND_SOURCE_DIR}/test_class.cc)
+pybind11_add_module(
+  pybind_example ${BACKEND_SOURCE_DIR}/wrapper.cc
+  ${BACKEND_SOURCE_DIR}/animal.cc ${BACKEND_SOURCE_DIR}/dog.cc
+  ${BACKEND_SOURCE_DIR}/cat.cc)
 
 if(MOVE_CPYTHON_SO)
   # move cpython.so into backend directory

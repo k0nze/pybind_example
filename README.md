@@ -19,7 +19,6 @@ This example project uses pybind11 as a submodule added to `external/pybind11`.
 
 Python version `>=3.10` (lower is possible if you avoid the `match` operator)
 
-Ubuntu:
 ```
 sudo apt install build-essential cmake ninja-build
 ```
@@ -47,4 +46,21 @@ cd ${INSTALL_DIR_PATH}
 python -m venv .venv
 source .venv/bin/activate
 python -m pip install git+https://github.com/k0nze/pybind_example.git
+```
+
+### Incremental Build
+
+When using `pip` to install this project no build artifacts are cached which leads to rebuilding all C++ files. To work with incremental builds the project has to be installed as editable once:
+
+```
+python -m venv .venv
+source .venv/bin/activate
+python -m pip install [-e] ${PYBIND_EXAMPLE_PATH}
+```
+
+create a build directory and run `cmake`:
+```
+mkdir build
+cmake ${PYBIND_EXAMPLE_PATH} -DPYTHON_EXECUTABLE=../.venv/bin/activate -DPYBIND11_PYTHON_VERSION=$(python -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')") -DMOVE_CPYTHON_SO=ON -DCMAKE_BUILD_TYPE=Release -GNinja
+ninja
 ```
