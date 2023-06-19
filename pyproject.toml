@@ -23,7 +23,12 @@ dependencies = []
 requires-python = ">=3.10"
 
 [project.optional-dependencies]
-dev = ["unittest", "pre-commit"]
+dev = ["unittest", "pre-commit", "pybind11-stubgen"]
 
 [project.urls]
 Homepage = "https://github.com/k0nze/pybind_example"
+
+[tool.pyright]
+stubPath = "stubs"
+reportMissingImports = true
+reportMissingTypeStubs = false

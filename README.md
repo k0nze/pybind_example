@@ -65,7 +65,7 @@ cmake ${PYBIND_EXAMPLE_PATH} -DPYTHON_EXECUTABLE=../.venv/bin/activate -DPYBIND1
 ninja
 ```
 
-## `clangd` configuration
+## `clangd` Configuration
 
 To get `pybind11` and Python includes for the `clangd` language server create a `.clangd` file at the project root with the following content:
 
@@ -80,4 +80,17 @@ The path the the Python can be obtained with the following command:
 
 ```
 echo $(python-config --includes)
+```
+
+## `pybind11` Stubs for Code Completion
+
+When editing this project you can generate `pybind11` stubs for code completion.
+
+```
+cd ${PYBIND_EXAMPLE_PATH}
+python -m venv .venv
+source .venv/bin/activate
+python -m pip install -e .
+python -m pip install pybind11-stubgen
+pybind11-stubgen --ignore-invalid signature -o stubs pybind_example
 ```
